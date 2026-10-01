@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trama · Ropa y accesorios</title>
+<style>
+:root{--bg:#eef1f6;--card:#fff;--ink:#141b2d;--mute:#5d6883;--line:#d8deea;--acc:#2f4fd8;--on:#fff;--sale:#c2342b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1424;--card:#182036;--ink:#e9edf8;--mute:#93a0c0;--line:#2a3452;--acc:#7f9bff;--on:#0f1424;--sale:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Helvetica Neue",Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);max-width:760px;margin:0 auto}
+.logo{font:700 28px Georgia,serif;letter-spacing:-1px}
+.hb{border:1px solid var(--ink);background:none;color:var(--ink);font:inherit;font-weight:700;border-radius:999px;padding:8px 16px}
+main{max-width:760px;margin:0 auto;padding:16px}
+#banner{background:var(--sale);color:#fff;border-radius:12px;padding:12px 14px;font-weight:700;margin-bottom:14px}
+.hero{font:700 34px/1.05 Georgia,serif;margin:8px 0 6px}
+.lead{color:var(--mute);margin:0 0 16px}
+.cats{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto}
+.cats button{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;border-radius:999px;padding:8px 16px;white-space:nowrap}
+.cats button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,1fr)}}
+.p{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.img{aspect-ratio:1/1;display:grid;place-items:center;font-size:64px;overflow:hidden}
+.img img{width:100%;height:100%;object-fit:cover;display:block}
+.tag{position:absolute;top:8px;left:8px;background:var(--sale);color:#fff;font-weight:700;font-size:13px;border-radius:8px;padding:2px 8px}
+.info{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.name{font-weight:700}
+.desc{color:var(--mute);font-size:13px}
+.price{color:var(--mute)}.price s{margin-right:6px}.price b{color:var(--sale)}
+.opts{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{border:1px solid var(--line);background:none;color:var(--ink);font:inherit;font-size:13px;border-radius:8px;padding:3px 9px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);padding:0}
+.dot.on{outline:2px solid var(--acc);outline-offset:2px}
+.add{margin-top:6px;border:0;background:var(--acc);color:var(--on);font:inherit;font-weight:700;border-radius:9px;padding:10px}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.shade{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--bg);z-index:10;display:flex;flex-direction:column;padding:16px}
+[hidden]{display:none!important}
+.dh{display:flex;justify-content:space-between;align-items:center;font:700 22px Georgia,serif;margin-bottom:12px}
+.x{border:0;background:none;color:var(--ink);font-size:28px}
+.items{flex:1;overflow-y:auto}
+.it{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.it .e{font-size:32px}.it .th{width:44px;height:44px;border-radius:8px;object-fit:cover}.it .g{flex:1}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:16px}
+.tot{display:flex;justify-content:space-between;font-weight:700;font-size:20px;margin:12px 0}
+.buy{display:block;text-align:center;text-decoration:none;background:var(--acc);color:var(--on);font-weight:700;border-radius:12px;padding:14px}
+.empty{color:var(--mute);text-align:center;padding:32px 0}
+</style>
+</head>
+<body>
+<header><span class="logo" id="logo">Trama</span><button class="hb" onclick="openCart(true)">Carrito (<span id="cnt">0</span>)</button></header>
+<main>
+<div id="banner" hidden></div>
+<h1 class="hero">Ropa y accesorios para todos los días</h1>
+<p class="lead">Elige talla y color, y envía tu pedido por WhatsApp.</p>
+<div class="cats" id="cats"></div>
+<div class="grid" id="grid"></div>
+</main>
+<div class="shade" id="shade" hidden onclick="openCart(false)"></div>
+<aside class="drawer" id="drawer" hidden aria-label="Carrito">
+<div class="dh">Tu carrito<button class="x" onclick="openCart(false)" aria-label="Cerrar">×</button></div>
+<div class="items" id="items"></div>
+<div class="tot"><span>Total</span><span id="total">$0</span></div>
+<a class="buy" id="buy" href="#" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+</aside>
+<script>
+/* ========= EDITA AQUÍ ========= */
+var TIENDA={
+  nombre:"Trama",
+  telefono:"521234567890",   // tu WhatsApp con código de país, sin + ni espacios
+  aviso:"Ofertas de temporada: hasta 25% de descuento"  // déjalo vacío "" para ocultarlo
+};
+/* Cada producto: n=nombre, d=descripción, p=precio, o=oferta en % (0 = sin oferta),
+   c=categoría ("Ropa" o "Accesorios"), e=emoji, bg=color de fondo,
+   t=tallas (lista vacía [] si no aplica), col=colores [nombre, código],
+   img=foto opcional (ej. "fotos/camiseta.jpg", súbela al mismo repositorio) */
+var P=[
+{id:1,n:"Camiseta básica",d:"Algodón suave, corte clásico.",p:250,o:0,c:"Ropa",e:"👕",bg:"#dbe4ff",t:["S","M","L","XL"],col:[["Negro","#222222"],["Blanco","#eeeeee"],["Azul","#2f4fd8"]]},
+{id:2,n:"Jeans rectos",d:"Mezclilla resistente, tiro medio.",p:650,o:20,c:"Ropa",e:"👖",bg:"#c9d6f2",t:["28","30","32","34"],col:[["Azul oscuro","#1d2b4f"],["Azul claro","#7d9bd1"]]},
+{id:3,n:"Chaqueta ligera",d:"Ideal para la noche y el viento.",p:890,o:25,c:"Ropa",e:"🧥",bg:"#e0e6d8",t:["S","M","L"],col:[["Verde","#4f6b4a"],["Negro","#222222"]]},
+{id:4,n:"Bufanda tejida",d:"Tejido grueso y suave.",p:320,o:0,c:"Ropa",e:"🧣",bg:"#f2dcd8",t:[],col:[["Rojo","#b83b3b"],["Gris","#8a8f99"]]},
+{id:5,n:"Bolso de mano",d:"Espacioso, con cierre y bolsillo interior.",p:540,o:10,c:"Accesorios",e:"👜",bg:"#e7dcf0",t:[],col:[["Negro","#222222"],["Marrón","#7a4b2a"]]},
+{id:6,n:"Gorra deportiva",d:"Ajustable, tela transpirable.",p:210,o:0,c:"Accesorios",e:"🧢",bg:"#d5ebe6",t:[],col:[["Negro","#222222"],["Blanco","#eeeeee"]]},
+{id:7,n:"Lentes de sol",d:"Protección UV, marco ligero.",p:380,o:0,c:"Accesorios",e:"🕶️",bg:"#f1e6c8",t:[],col:[["Negro","#222222"]]},
+{id:8,n:"Reloj clásico",d:"Correa de cuero, esfera simple.",p:720,o:15,c:"Accesorios",e:"⌚",bg:"#d9dde8",t:[],col:[["Plata","#b9bec9"],["Dorado","#c9a24b"]]}
+];
+/* ========= FIN ========= */
+
+function $(i){return document.getElementById(i)}
+var cart={},sel={},cat="Todo";
+function fp(x){return Math.round(x.p*(100-(x.o||0))/100)}
+function money(v){return "$"+v.toLocaleString("es")}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function find(i){return P.filter(function(p){return p.id==i})[0]}
+function S(id){return sel[id]||(sel[id]={t:0,c:0})}
+function label(k){var a=k.split("|"),x=find(a[0]),r=[];
+if(x.t&&x.t.length)r.push("Talla "+x.t[a[1]]);if(x.col&&x.col.length)r.push(x.col[a[2]][0]);return r.join(" · ")}
+function cats(){$("cats").innerHTML=["Todo","Ropa","Accesorios"].map(function(c){return '<button class="'+(c==cat?'on':'')+'" onclick="setCat(\''+c+'\')">'+c+'</button>'}).join("")}
+function setCat(c){cat=c;cats();grid()}
+function pick(id,k,i){S(id)[k]=i;grid()}
+function pic(x){return x.img?'<img src="'+esc(x.img)+'" alt="'+esc(x.n)+'">':x.e}
+function grid(){
+$("banner").hidden=!TIENDA.aviso;$("banner").textContent=TIENDA.aviso||"";
+$("grid").innerHTML=P.filter(function(x){return cat=="Todo"||x.c==cat}).map(function(x){
+var s=S(x.id);
+var pr=x.o>0?'<span class="price"><s>'+money(x.p)+'</s><b>'+money(fp(x))+'</b></span>':'<span class="price">'+money(x.p)+'</span>';
+var ts=(x.t||[]).length?'<div class="opts">'+x.t.map(function(v,i){return '<button class="chip'+(s.t==i?' on':'')+'" onclick="pick('+x.id+',\'t\','+i+')">'+esc(v)+'</button>'}).join("")+'</div>':'';
+var cs=(x.col||[]).length?'<div class="opts">'+x.col.map(function(v,i){return '<button class="dot'+(s.c==i?' on':'')+'" style="background:'+v[1]+'" title="'+esc(v[0])+'" aria-label="'+esc(v[0])+'" onclick="pick('+x.id+',\'c\','+i+')"></button>'}).join("")+'<span class="desc">'+esc(x.col[s.c][0])+'</span></div>':'';
+return '<div class="p">'+(x.o>0?'<span class="tag">-'+x.o+'%</span>':'')+'<div class="img" style="background:'+x.bg+'">'+pic(x)+'</div><div class="info"><span class="name">'+esc(x.n)+'</span><span class="desc">'+esc(x.d||"")+'</span>'+pr+ts+cs+'<button class="add" onclick="add('+x.id+')">Añadir</button></div></div>'}).join("")}
+function add(id){var s=S(id),k=id+"|"+s.t+"|"+s.c;cart[k]=(cart[k]||0)+1;draw()}
+function chg(k,d){cart[k]=(cart[k]||0)+d;if(cart[k]<=0)delete cart[k];draw()}
+function openCart(o){$("drawer").hidden=!o;$("shade").hidden=!o}
+function draw(){
+var ks=Object.keys(cart),n=0,t=0,msg="Hola, quiero pedir:%0A";
+ks.forEach(function(k){var x=find(k.split("|")[0]),q=cart[k],l=label(k);n+=q;t+=q*fp(x);msg+=q+" x "+encodeURIComponent(x.n+(l?" ("+l+")":""))+"%0A"});
+msg+="Total: "+encodeURIComponent(money(t));
+$("cnt").textContent=n;$("total").textContent=money(t);
+$("items").innerHTML=ks.length?ks.map(function(k){var x=find(k.split("|")[0]),l=label(k);
+return '<div class="it">'+(x.img?'<img class="th" src="'+esc(x.img)+'" alt="">':'<span class="e">'+x.e+'</span>')+'<div class="g">'+esc(x.n)+'<div class="desc">'+esc(l)+'</div><div class="price">'+money(fp(x))+'</div></div><div class="qty"><button onclick="chg(\''+k+'\',-1)" aria-label="Quitar uno">−</button>'+cart[k]+'<button onclick="chg(\''+k+'\',1)" aria-label="Añadir uno">+</button></div></div>'}).join(""):'<div class="empty">Tu carrito está vacío. Elige una prenda para empezar.</div>';
+$("buy").style.display=ks.length?"block":"none";
+$("buy").href="https://wa.me/"+TIENDA.telefono+"?text="+msg;grid()}
+$("logo").textContent=TIENDA.nombre;document.title=TIENDA.nombre+" · Ropa y accesorios";
+cats();draw();
+</script>
+</body>
+</html>
